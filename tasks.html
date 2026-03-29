@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Flow-Smart-Planner | My Tasks</title>
+
+  <style>
+
+
+    body {
+
+
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f3e7e9, #e3eeff, #d8b4f8, #b5b9ff);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 10px;
+      color: #333;
+      background-attachment: fixed;
+    }
+
+    
+
+
+
+   
+
+    @keyframes gradient {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      width: 95%;
+      max-width: 600px;
+      padding: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .home-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 22px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .home-btn:hover {
+      background-color: #7a5cf0;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #5b3dc2;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+
+    .task-input input, 
+    .task-input textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      background-color: #fafafa;
+    }
+
+    .task-input button {
+      width: 100%;
+      background: linear-gradient(to right, #7a5cf0, #c084fc);
+      border: none;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .task-input button:hover {
+      transform: scale(1.03);
+      transition: 0.3s;
+    }
+
+    .type-buttons {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .type-btn {
+      border: none;
+      background-color: #eee;
+      padding: 8px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .type-btn.active {
+      background-color: #7a5cf0;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .task {
+      background: white;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-left: 6px solid #7a5cf0;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .task.done {
+      opacity: 0.6;
+      text-decoration: line-through;
+      background: #f5f5f5;
+    }
+
+    .task-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .btn-done { background-color: #34d399; }
+    .btn-delete { background-color: #ef4444; }
+    .btn-edit { background-color: #f59e0b; }
+
+    .task img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 8px;
+    }
+
+    .category-label {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: white;
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      border: none;
+      background-color: #d1d5db;
+      padding: 8px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .filter-btn.active {
+      background-color: #7a5cf0;
+      color: white;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  
+
+
+
+  <div class="container">
+    <button class="home-btn" onclick="goHome()">🏠</button>
+    <h2>🌸 My Daily Tasks</h2>
+
+    <div class="task-input">
+      <div class="type-buttons">
+        <button class="type-btn" onclick="selectType(this, 'Appointment')">📅 Appointment</button>
+        <button class="type-btn" onclick="selectType(this, 'Assignment')">📘 Assignment</button>
+        <button class="type-btn" onclick="selectType(this, 'Other')">🌈 Other</button>
+      </div>
+
+      <input type="text" id="taskTitle" placeholder="Task title...">
+      <textarea id="taskDetails" placeholder="Task details..."></textarea>
+      <input type="date" id="taskDate">
+      <input type="color" id="taskColor" value="#7a5cf0">
+      <input type="file" id="taskImage" accept="image/*">
+      <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="filter-buttons">
+      <button class="filter-btn active" onclick="filterTasks('All')">🌟 All</button>
+      <button class="filter-btn" onclick="filterTasks('Appointment')">📅 Appointments</button>
+      <button class="filter-btn" onclick="filterTasks('Assignment')">📘 Assignments</button>
+      <button class="filter-btn" onclick="filterTasks('Other')">🌈 Others</button>
+    </div>
+
+    <div class="task-list" id="taskList"></div>
+  </div>
+
+  
+
+  <script>
+    let selectedType = "";
+    let currentFilter = "All";
+    const taskList = document.getElementById("taskList");
+    document.addEventListener("DOMContentLoaded", displayTasks);
+
+    function goHome() {
+      window.location.href = "index.html";
+    }
+
+    function selectType(btn, type) {
+      document.querySelectorAll(".type-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedType = type;
+    }
+
+    function addTask() {
+      const title = document.getElementById("taskTitle").value.trim();
+      const details = document.getElementById("taskDetails").value.trim();
+      const date = document.getElementById("taskDate").value;
+      const color = document.getElementById("taskColor").value;
+      const imageInput = document.getElementById("taskImage");
+
+      if (!title) return alert("Please enter a task title!");
+      if (!selectedType) return alert("Please choose a category!");
+
+      const task = { title, details, date, color, done: false, imageURL: "", type: selectedType };
+
+      if (imageInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          task.imageURL = e.target.result;
+          saveTask(task);
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        saveTask(task);
+      }
+
+      clearInputs();
+    }
+
+    function saveTask(task) {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks.push(task);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      displayTasks();
+    }
+
+    function clearInputs() {
+      document.getElementById("taskTitle").value = "";
+      document.getElementById("taskDetails").value = "";
+      document.getElementById("taskDate").value = "";
+      document.getElementById("taskColor").value = "#7a5cf0";
+      document.getElementById("taskImage").value = "";
+      document.querySelectorAll(".type-btn").forEach(b => b.classList.remove("active"));
+      selectedType = "";
+    }
+
+    function displayTasks() {
+      taskList.innerHTML = "";
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      const filtered = currentFilter === "All" ? tasks : tasks.filter(t => t.type === currentFilter);
+
+      filtered.forEach((task, index) => {
+        const div = document.createElement("div");
+        div.classList.add("task");
+        if (task.done) div.classList.add("done");
+        div.style.borderLeftColor = task.color;
+
+        let typeColor = "#7a5cf0";
+        if (task.type === "Appointment") typeColor = "#3b82f6";
+        if (task.type === "Assignment") typeColor = "#10b981";
+        if (task.type === "Other") typeColor = "#ec4899";
+
+        div.innerHTML = `
+          <span class="category-label" style="background-color:${typeColor};">${task.type}</span>
+          <strong>${task.title}</strong><br>
+          <small>${task.date || "No date"}</small>
+          <p>${task.details}</p>
+          ${task.imageURL ? `<img src="${task.imageURL}" alt="Task Image">` : ""}
+          <div class="task-buttons">
+            <button class="btn btn-done" onclick="toggleDone(${index})">✅ Done</button>
+            <button class="btn btn-edit" onclick="editTask(${index})">✏️ Edit</button>
+            <button class="btn btn-delete" onclick="deleteTask(${index})">🗑 Delete</button>
+          </div>
+        `;
+        taskList.appendChild(div);
+      });
+    }
+
+    function filterTasks(type) {
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      event.target.classList.add("active");
+      currentFilter = type;
+      displayTasks();
+    }
+
+    function toggleDone(index) {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks[index].done = !tasks[index].done;
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      displayTasks();
+    }
+
+    function deleteTask(index) {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks.splice(index, 1);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      displayTasks();
+    }
+
+    function editTask(index) {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      const task = tasks[index];
+
+      const newTitle = prompt("Edit task title:", task.title);
+      if (newTitle === null) return;
+      const newDetails = prompt("Edit details:", task.details);
+      if (newDetails === null) return;
+      const newDate = prompt("Edit date (YYYY-MM-DD):", task.date);
+      if (newDate === null) return;
+
+      task.title = newTitle.trim() || task.title;
+      task.details = newDetails.trim() || task.details;
+      task.date = newDate || task.date;
+
+      tasks[index] = task;
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      displayTasks();
+    }
+  </script>
+</body>
+</html>
+
+<!-- زر Morph الجديد -->
+<button id="smartDashboardBtn" title="Go to Smart Dashboard">🧠</button>
+
+<body>
+
+
+
+</body>
+
+
+<style>
+  #smartDashboardBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7a5cf0, #c084fc);
+    color: white;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(122,92,240,0.5);
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+
+  #smartDashboardBtn:hover {
+    transform: scale(1.2) rotate(15deg);
+    box-shadow: 0 0 20px rgba(122,92,240,0.9);
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("smartDashboardBtn");
+    const container = document.querySelector(".container");
+
+    btn.addEventListener("click", () => {
+      if(container){
+        container.style.transition = "all 0.5s ease";
+        container.style.opacity = "0";
+      }
+      setTimeout(() => {
+        window.location.href = "dashboard.html"; // رابط صفحة Dashboard
+      }, 500);
+    });
+  });
+</script>
+

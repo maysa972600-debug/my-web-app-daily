@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Dashboard</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #d8b4f8, #b5b9ff, #f3e7e9);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: #333;
+  }
+
+  @keyframes gradient {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+
+  .dashboard-container {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    width: 95%;
+    max-width: 600px;
+    padding: 25px;
+    position: relative;
+  }
+
+  h2 {
+    text-align: center;
+    color: #5b3dc2;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+
+  .section {
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+  }
+
+  .btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 10px;
+    color: white;
+    background: linear-gradient(to right, #7a5cf0, #c084fc);
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(122, 92, 240, 0.7);
+  }
+
+  .insight {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .idea {
+    font-size: 15px;
+    font-style: italic;
+    margin-top: 10px;
+  }
+
+  #homeBtn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 22px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  #homeBtn:hover {
+    background-color: #7a5cf0;
+    color: white;
+    transform: scale(1.1);
+  }
+</style>
+</head>
+<body>
+
+<div class="dashboard-container">
+  <button id="homeBtn" onclick="goHome()">🏠</button>
+  <h2>🌟 Smart Dashboard</h2>
+
+  <div class="section" id="insights">
+    <h3>📊 Your Insights</h3>
+    <div class="insight" id="completedTasks">Completed Tasks: 0</div>
+    <div class="insight" id="remainingTasks">Remaining Tasks: 0</div>
+    <div class="insight" id="completionRate">Completion Rate: 0%</div>
+    <div class="insight" id="message">Keep going! You are doing great! 🌸</div>
+  </div>
+
+  <div class="section" id="ideaSection">
+    <h3>💡 Idea of the Day</h3>
+    <div class="idea" id="ideaText">Press the button to generate a new idea!</div>
+    <button class="btn" id="generateIdea">Generate Idea</button>
+  </div>
+</div>
+
+<script>
+  // الرجوع للصفحة الرئيسية
+  function goHome() {
+    window.location.href = "tasks.html"; // رابط صفحة المهام
+  }
+
+  // توليد أفكار
+  const ideas = [
+    "Try organizing your desk for 5 minutes!",
+    "Write a positive sentence in English.",
+    "Draw how you feel today using warm colors 🎨",
+    "Take a short walk to refresh your mind 🌿",
+    "Drink a glass of water and relax for 2 minutes 💧"
+  ];
+
+  document.getElementById("generateIdea").addEventListener("click", () => {
+    const randomIndex = Math.floor(Math.random() * ideas.length);
+    document.getElementById("ideaText").innerText = ideas[randomIndex];
+  });
+
+  // تحليلات ذكية
+  function updateInsights() {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const completed = tasks.filter(t => t.done).length;
+    const remaining = tasks.length - completed;
+    const rate = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
+
+    document.getElementById("completedTasks").innerText = "Completed Tasks: " + completed;
+    document.getElementById("remainingTasks").innerText = "Remaining Tasks: " + remaining;
+    document.getElementById("completionRate").innerText = "Completion Rate: " + rate + "%";
+
+    let msg = "Keep going! You are doing great! 🌸";
+    if(rate === 100) msg = "🎉 Amazing! You completed all your tasks!";
+    else if(rate >= 50) msg = "👍 Good progress! Keep it up!";
+    document.getElementById("message").innerText = msg;
+  }
+
+  document.addEventListener("DOMContentLoaded", updateInsights);
+</script>
+
+</body>
+</html>
+
